@@ -1,0 +1,32 @@
+# Compiled binaries
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+wrenpanel
+wrenpanel-worker
+
+# SQLite databases & temp files
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+
+# Runtime logs & staging
+*.log
+/var/log/
+/var/lib/
+
+# Node.js dependencies
+web/node_modules/
+.npm
+package-lock.json
+
+# IDE & Editor artifacts
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db

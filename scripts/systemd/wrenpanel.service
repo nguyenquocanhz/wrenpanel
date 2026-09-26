@@ -1,0 +1,24 @@
+[Unit]
+Description=WrenPanel Control Panel (Unprivileged API Service)
+After=network.target wrenpanel-worker.service
+Requires=wrenpanel-worker.service
+
+[Service]
+Type=simple
+User=wrenpanel
+Group=wrenpanel
+ExecStart=/opt/wrenpanel/bin/wrenpanel --port 8080 --db /var/lib/wrenpanel/wrenpanel.db --worker-socket /run/wrenpanel/worker.sock
+Restart=always
+RestartSec=3s
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+
+# Logging
+StandardOutput=append:/var/log/wrenpanel/panel.log
+StandardError=append:/var/log/wrenpanel/panel.log
+
+[Install]
+WantedBy=multi-user.target
