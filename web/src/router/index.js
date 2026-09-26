@@ -11,8 +11,10 @@ import SSLView from '../views/SSL/SSLView.vue'
 import BackupsView from '../views/Backups/BackupsView.vue'
 import AccountsView from '../views/Accounts/AccountsView.vue'
 import SystemView from '../views/System/SystemView.vue'
+import LoginView from '../views/Auth/LoginView.vue'
 
 const routes = [
+  { path: '/login', name: 'login', component: LoginView },
   { path: '/', redirect: '/vhosts' },
   { path: '/vhosts', name: 'vhosts', component: VhostsView },
   { path: '/apps', name: 'apps', component: AppsView },

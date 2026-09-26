@@ -10,6 +10,12 @@ export const accountsApi = {
       body: JSON.stringify(payload),
     })
   },
+  resetPassword(id, password) {
+    return request(`/api/accounts/${id}/reset-password`, {
+      method: 'POST',
+      body: JSON.stringify({ password: password || '' }),
+    })
+  },
   delete(id) {
     return request(`/api/accounts/${id}`, {
       method: 'DELETE',

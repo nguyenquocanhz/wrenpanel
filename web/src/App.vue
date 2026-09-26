@@ -1,5 +1,8 @@
 <template>
-  <div class="flex min-h-screen bg-[#0b1120] text-slate-100">
+  <div v-if="route.name === 'login'" class="min-h-screen bg-[#0b1120]">
+    <router-view />
+  </div>
+  <div v-else class="flex min-h-screen bg-[#0b1120] text-slate-100">
     <!-- Left fixed Sidebar (aaPanel style) -->
     <AppSidebar />
 
@@ -14,6 +17,9 @@
 </template>
 
 <script setup>
+import { useRoute } from 'vue-router'
 import AppSidebar from './components/AppSidebar.vue'
 import AppHeader from './components/AppHeader.vue'
+
+const route = useRoute()
 </script>

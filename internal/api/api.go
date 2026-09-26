@@ -56,12 +56,17 @@ func (s *Server) setupMiddleware() {
 
 func (s *Server) setupRoutes() {
 	s.router.Route("/api", func(r chi.Router) {
+		// Auth
+		r.Post("/auth/login", s.handleLogin)
+		r.Get("/auth/me", s.handleMe)
+
 		// System
 		r.Get("/system/status", s.handleSystemStatus)
 
 		// Accounts
 		r.Get("/accounts", s.handleListAccounts)
 		r.Post("/accounts", s.handleCreateAccount)
+		r.Post("/accounts/{id}/reset-password", s.handleResetAccountPassword)
 		r.Delete("/accounts/{id}", s.handleDeleteAccount)
 
 		// Vhosts & Domains

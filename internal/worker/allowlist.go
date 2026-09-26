@@ -20,6 +20,7 @@ const (
 	ActionSystemdAction          = "systemd.action"
 	ActionUserCreate             = "user.create"
 	ActionUserDelete             = "user.delete"
+	ActionUserSetPassword        = "user.set_password"
 	ActionDirEnsure              = "dir.ensure"
 	ActionDirRemove              = "dir.remove"
 	ActionPhpReload              = "php.reload"
@@ -94,6 +95,21 @@ func ValidateCommand(cmd Command) error {
 		user := cmd.Params["username"]
 		if !validUsernameRegex.MatchString(user) {
 			return fmt.Errorf("invalid username '%s'", user)
+		}
+		if pass, ok := cmd.Params["password"]; ok && pass != "" {
+			if strings.ContainsAny(pass, "\r\n") {
+				return fmt.Errorf("password cannot contain newline characters")
+			}
+		}
+
+	case ActionUserSetPassword:
+		user := cmd.Params["username"]
+		if !validUsernameRegex.MatchString(user) {
+			return fmt.Errorf("invalid username '%s'", user)
+		}
+		pass := cmd.Params["password"]
+		if pass == "" || strings.ContainsAny(pass, "\r\n") {
+			return fmt.Errorf("valid password required without newlines")
 		}
 
 	case ActionDirEnsure, ActionDirRemove:

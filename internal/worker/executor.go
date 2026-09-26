@@ -196,6 +196,7 @@ func (e *Executor) dispatch(cmd Command) (string, error) {
 		if homeDir == "" {
 			homeDir = "/home/" + username
 		}
+		password := cmd.Params["password"]
 		if e.DryRun {
 			return fmt.Sprintf("user %s created with home %s (dry-run)", username, homeDir), nil
 		}
@@ -203,7 +204,29 @@ func (e *Executor) dispatch(cmd Command) (string, error) {
 		if err != nil {
 			return string(out), fmt.Errorf("useradd failed: %s (%w)", string(out), err)
 		}
+		if password != "" {
+			cmdPass := exec.Command("chpasswd")
+			cmdPass.Stdin = strings.NewReader(fmt.Sprintf("%s:%s\n", username, password))
+			if pOut, pErr := cmdPass.CombinedOutput(); pErr != nil {
+				return string(pOut), fmt.Errorf("chpasswd failed: %s (%w)", string(pOut), pErr)
+			}
+		}
+		_ = exec.Command("chown", "-R", fmt.Sprintf("%s:%s", username, username), homeDir).Run()
+		_ = exec.Command("chmod", "750", homeDir).Run()
 		return fmt.Sprintf("user %s created", username), nil
+
+	case ActionUserSetPassword:
+		username := cmd.Params["username"]
+		password := cmd.Params["password"]
+		if e.DryRun {
+			return fmt.Sprintf("password updated for user %s (dry-run)", username), nil
+		}
+		cmdPass := exec.Command("chpasswd")
+		cmdPass.Stdin = strings.NewReader(fmt.Sprintf("%s:%s\n", username, password))
+		if pOut, pErr := cmdPass.CombinedOutput(); pErr != nil {
+			return string(pOut), fmt.Errorf("chpasswd failed: %s (%w)", string(pOut), pErr)
+		}
+		return fmt.Sprintf("password updated for user %s", username), nil
 
 	case ActionUserDelete:
 		username := cmd.Params["username"]
